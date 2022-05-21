@@ -1,9 +1,10 @@
 // ---------------------imports-----------------------
 // ---------------------------------------------------
-require("dotenv").config();
-let cors = require("cors");
-const { dbConnection } = require("./db/config");
-const express = require("express");
+require("dotenv").config(); // environments
+let cors = require("cors"); // connection to API
+const { dbConnection } = require("./db/config"); // bd
+const express = require("express"); // server 
+const { logErrors, errroHandler } = require("./middlewares/errorHandler");
 
 // -------------------others config-------------------
 // ---------------------------------------------------
@@ -22,10 +23,9 @@ app.listen(port, () => {
 // -------------------middleware -g-------------------
 // ---------------------------------------------------
 app.use(cors());
+app.use(express.json());
+app.use('/api/users', require('./routes/users.router.js'));
+app.use('/api/login', require('./routes/login.router.js'));
 
-// routes
-app.get("/", (req, res) => {
-  res.status(200).json({
-    message: "entry point",
-  });
-});
+
+
