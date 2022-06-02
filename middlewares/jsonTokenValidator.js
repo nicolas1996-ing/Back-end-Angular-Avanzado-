@@ -20,7 +20,7 @@ const validateJSONWebToken = (req, res, next) => {
     // ----------add properties in req ----------
     req.uid = uid;
     next();
-    console.log(uid);
+    // console.log(uid);
   } catch (error) {
     return res.status(401).json({
       success: false,

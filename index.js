@@ -24,8 +24,13 @@ app.listen(port, () => {
 // ---------------------------------------------------
 app.use(cors());
 app.use(express.json());
+
 app.use('/api/users', require('./routes/users.router.js'));
 app.use('/api/login', require('./routes/login.router.js'));
+app.use('/api/hospitals', require('./routes/hospitals.router.js'));
+app.use('/api/doctors', require('./routes/doctors.router.js'));
+app.use('/api/all', require('./routes/all.router.js'));
+app.use('/api/uploads', require('./routes/uploads.router.js'));
 
 
 

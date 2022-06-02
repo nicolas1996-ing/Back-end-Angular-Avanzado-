@@ -3,12 +3,44 @@ const bcrypt = require("bcryptjs");
 const { generateJSONWebToken } = require("../utils/jwt");
 
 const getUsers = async (req, res) => {
-  // const users = await User.find(); // all properties schema
-  const users = await User.find({}, "name email role google"); // some properties schema
+  // -----------------pagination------------
+  // ---------------------------------------
+  const page = Number(req.query.page) || 0;
+  const limit = Number(req.query.limit) || 0;
+  // http://localhost:3005/api/users?page=1&limit=0
+  // console.log(page,limit);
+
+  // -------pagination: page, limit --------
+  // ---------------------------------------
+  // const users = await User.find().skip(page).limit(limit); // all properties schema
+  // // const users = await User.find({}, "name email role google"); // some properties schema
+  // const totalUsers = await User.count();
+
+  const [users, totalUsers] = await Promise.all([
+    User.find().skip(page).limit(limit), // pagination
+    User.count(), // counter
+  ]);
+
+  // let users, totalUsers; 
+  // Promise.all([
+  //   User.find().skip(page).limit(limit),
+  //   User.count(),
+  // ]).then(resp => {
+  //   users = resp[0];
+  //   totalUsers = resp[1];
+  // })
+
+  const infoRequest = {
+    token: req.header("x-token"),
+    params: req.body.params,
+    query: req.query,
+  };
 
   res.status(200).json({
     success: true,
+    infoRequest,
     data: users,
+    totalUsers,
     uidCurrentUser: req.uid, // middleware jsonTokenValidator
     message: "user routes found",
   });
@@ -33,7 +65,7 @@ const createUser = async (req, res) => {
     // ------------------------------------
     const salt = bcrypt.genSaltSync();
     user.password = bcrypt.hashSync(password, salt);
-    
+
     await user.save();
 
     // ---------------token generate---------------
@@ -43,7 +75,7 @@ const createUser = async (req, res) => {
     res.status(200).json({
       message: "user has been creted",
       user,
-      token
+      token,
     });
   } catch (error) {
     console.log(error);
@@ -96,7 +128,7 @@ const updateUser = async (req, res) => {
       susccess: true,
       id,
       userUpdate,
-      uidUserThatUpdated: req.uid
+      uidUserThatUpdated: req.uid,
     });
   } catch (error) {
     console.log(error);
