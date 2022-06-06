@@ -1,11 +1,14 @@
 const bcrypt = require("bcryptjs/dist/bcrypt");
-const users = require("../models/users");
+const User = require("../models/users");
+const { googlVerify } = require("../utils/google-verify");
 const { generateJSONWebToken } = require("../utils/jwt");
 
+// -----------------auth method #1-----------------
+// ------------------------------------------------
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const userdBD = await users.findOne({ email });
+    const userdBD = await User.findOne({ email });
 
     // --------------verify: email-----------------
     // --------------------------------------------
@@ -48,6 +51,59 @@ const loginUser = async (req, res) => {
   }
 };
 
+// -----------------auth method #2-----------------
+// ------------------------------------------------
+const googleSignIn = async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const { name, email, picture } = await googlVerify(token);
+
+    // -------------------verify user in bd-------------------
+    // -------------------------------------------------------
+    const userdBD = await User.findOne({ email });
+    let newUser;
+
+    if (!userdBD) {
+      // -----------------create a new user------------------
+      // ----------------------------------------------------
+      newUser = new User({
+        name,
+        email,
+        password: "@@@",
+        image: picture,
+        google: true,
+      });
+    } else {
+      // --------------------user exist---------------------
+      newUser = userdBD;
+      newUser.google = true;
+      newUser.password = "@@@";
+    }
+
+    // ---------------------save in bd---------------------
+    await newUser.save();
+    const JSOWebtoken = await generateJSONWebToken(newUser._id, newUser.email); // payload: _id and email
+
+
+    return res.status(200).json({
+      success: true,
+      message: "Google Sign",
+      JSOWebtoken,
+      name,
+      email,
+      picture,
+    });
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "incorrect token",
+      error,
+    });
+  }
+};
+
 module.exports = {
   loginUser,
+  googleSignIn,
 };

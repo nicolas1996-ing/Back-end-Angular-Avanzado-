@@ -25,6 +25,9 @@ app.listen(port, () => {
 app.use(cors());
 app.use(express.json());
 
+// ------------connect with the front-end------------
+app.use(express.static('public'));
+
 app.use('/api/users', require('./routes/users.router.js'));
 app.use('/api/login', require('./routes/login.router.js'));
 app.use('/api/hospitals', require('./routes/hospitals.router.js'));
@@ -33,4 +36,5 @@ app.use('/api/all', require('./routes/all.router.js'));
 app.use('/api/uploads', require('./routes/uploads.router.js'));
 
 
-
+// publish postman collection
+// https://learning.postman.com/docs/publishing-your-api/publishing-your-docs/
