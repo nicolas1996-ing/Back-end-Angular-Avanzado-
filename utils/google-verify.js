@@ -11,8 +11,8 @@ async function googlVerify(token) {
   const userid = payload["sub"];
 
   const { name, email, picture } = payload;
-  console.log(payload);
-  console.log('google-verify')
+  // console.log(payload);
+  // console.log('google-verify')
   return { name, email, picture };
 }
 

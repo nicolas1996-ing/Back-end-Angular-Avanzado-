@@ -15,10 +15,11 @@ const validateJSONWebToken = (req, res, next) => {
   }
 
   try {
-    const { uid } = jwt.verify(token, process.env.JWTSECRET);
+    const { uid, email } = jwt.verify(token, process.env.JWTSECRET);
     // --------------token correct---------------
     // ----------add properties in req ----------
     req.uid = uid;
+    req.email = email
     next();
     // console.log(uid);
   } catch (error) {

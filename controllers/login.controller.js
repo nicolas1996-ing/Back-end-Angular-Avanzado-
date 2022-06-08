@@ -85,7 +85,6 @@ const googleSignIn = async (req, res) => {
     await newUser.save();
     const JSOWebtoken = await generateJSONWebToken(newUser._id, newUser.email); // payload: _id and email
 
-
     return res.status(200).json({
       success: true,
       message: "Google Sign",
@@ -103,7 +102,29 @@ const googleSignIn = async (req, res) => {
   }
 };
 
+const renewToken = async (req, res) => {
+  // -----------payload token : email and uid-----------
+  // --------------------update token--------------------
+  // ----------------------------------------------------
+  try {
+    const JSOWebtoken = await generateJSONWebToken(req.uid, req.email); // payload: _id and email
+    res.status(200).json({
+      success: true,
+      uid: req.uid,
+      email: req.email,
+      JSOWebtoken,
+    });
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "incorrect token",
+      error,
+    });
+  }
+};
+
 module.exports = {
   loginUser,
   googleSignIn,
+  renewToken,
 };

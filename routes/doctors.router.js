@@ -10,7 +10,7 @@ const { validateJSONWebToken } = require("../middlewares/jsonTokenValidator");
 const { schemaValidator } = require("../middlewares/schemaValidator");
 const router = Router();
 
-router.get("/",validateJSONWebToken, getDoctors);
+router.get("/", validateJSONWebToken, getDoctors);
 router.post(
   "/",
   [
@@ -22,7 +22,16 @@ router.post(
   ],
   createDoctors
 );
-router.patch("/:id", updateDoctor);
-router.delete("/:id", deleteDoctor);
+router.patch(
+  "/:id",
+  [
+    validateJSONWebToken,
+    check("name", "name is required").not().isEmpty(),
+    check("hospital", "hospital Id is required").not().isEmpty(),
+    schemaValidator,
+  ],
+  updateDoctor
+);
+router.delete("/:id", validateJSONWebToken, deleteDoctor);
 
 module.exports = router;
