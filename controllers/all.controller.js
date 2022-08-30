@@ -37,10 +37,10 @@ const getAllInfo = async (req, res) => {
   }
 };
 
-getAllInfoByCollection = async (req, res) => {
+const getAllInfoByCollection = async (req, res) => {
   const table = req.params.table;
-  const { paramSearch } = req.params;
-  const regex = new RegExp(paramSearch, "i");
+  const { searchTerm } = req.params;
+  const regex = new RegExp(searchTerm, "i");
   let data;
 
   switch (table) {

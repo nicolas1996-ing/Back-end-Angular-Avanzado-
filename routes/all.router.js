@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { getAllInfo } = require("../controllers/all.controller");
+const { getAllInfo, getAllInfoByCollection } = require("../controllers/all.controller");
 const { validateJSONWebToken } = require("../middlewares/jsonTokenValidator");
 
 const router = Router();

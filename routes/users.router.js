@@ -5,6 +5,7 @@ const {
   createUser,
   updateUser,
   deleteUser,
+  getUser,
 } = require("../controllers/users.controller");
 const { validateJSONWebToken } = require("../middlewares/jsonTokenValidator");
 const { schemaValidator } = require("../middlewares/schemaValidator");
@@ -15,6 +16,8 @@ const router = Router();
 // ---------------------------------------------------
 // http://localhost:3005/api/users/
 router.get("/", validateJSONWebToken, getUsers);
+router.get("/:id", validateJSONWebToken, getUser);
+
 router.post(
   "/",
   [

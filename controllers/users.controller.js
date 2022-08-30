@@ -21,7 +21,7 @@ const getUsers = async (req, res) => {
     User.count(), // counter
   ]);
 
-  // let users, totalUsers; 
+  // let users, totalUsers;
   // Promise.all([
   //   User.find().skip(page).limit(limit),
   //   User.count(),
@@ -44,6 +44,40 @@ const getUsers = async (req, res) => {
     uidCurrentUser: req.uid, // middleware jsonTokenValidator
     message: "user routes found",
   });
+};
+
+const getUser = async (req, res) => {
+  const { id } = req.params;
+  const query = req.query; // opcionales
+  const body = req.body;
+  const headers = req.header("x-token");
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(500).json({
+        success: false,
+        message: "user no exist",
+        error,
+        id,
+      });
+    }
+
+    return res.status(200).json({
+      params: id,
+      queryParams: query,
+      requestBody: body,
+      headers,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "user no exist",
+      error,
+    });
+  }
 };
 
 const createUser = async (req, res) => {
@@ -116,9 +150,14 @@ const updateUser = async (req, res) => {
     }
 
     // const userUpdate = await User.findByIdAndUpdate(id, fieldsToUpdate, {new: false}); // user with information last
+    // google users can not update email
+    if (!userBD.google) {
+      fieldsToUpdate.email = email;
+    }
+
     const userUpdate = await User.findByIdAndUpdate(
       id,
-      { ...fieldsToUpdate, email },
+      { ...fieldsToUpdate },
       {
         new: true,
       }
@@ -170,4 +209,5 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
+  getUser,
 };

@@ -100,7 +100,7 @@ const showImage = (req, res) => {
   // --------------------------------validation--------------------------------
   if (!fs.existsSync(pathImgSaveInServer)) {
     const pathImgError = path.join(__dirname, `../uploads/img-error.jpg`);
-    return res.status(404).sendFile(pathImgError);
+    return res.status(200).sendFile(pathImgError);
   }
   res.status(200).sendFile(pathImgSaveInServer);
 };

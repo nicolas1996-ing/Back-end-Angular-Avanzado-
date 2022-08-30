@@ -1,13 +1,27 @@
 const Hospital = require("../models/hospitals.model");
 
 const getHospitals = async (req, res) => {
+  // ---------------------------pagination---------------------------
+  const page = Number(req.query.page) || 0;
+  const limit = Number(req.query.limit) || 0;
+
   try {
     // --------there is a relation with cretedBy ( user table)--------
-    const hospitals = await Hospital.find().populate("createdBy", "name email");
+    // const hospitals = await Hospital.find().populate("createdBy", "name email");
+
+    const [hospitals, totalhospitals] = await Promise.all([
+      Hospital.find()
+        .populate("createdBy", "name email")
+        .skip(page)
+        .limit(limit), // pagination
+      Hospital.count(), // counter
+    ]);
+
     res.status(200).json({
       success: true,
       message: "get hospital has been executed",
       hospitals,
+      totalhospitals,
     });
   } catch (error) {
     res.status(500).json({
@@ -83,10 +97,10 @@ const updateHospital = async (req, res) => {
   }
 };
 
-const deleteHospital = async(req, res) => {
+const deleteHospital = async (req, res) => {
   try {
-    const {id} = req.params; 
-    const hospitalToBeDeleted = await Hospital.findById(id); 
+    const { id } = req.params;
+    const hospitalToBeDeleted = await Hospital.findById(id);
 
     if (!hospitalToBeDeleted) {
       return res.status(401).json({
@@ -98,18 +112,15 @@ const deleteHospital = async(req, res) => {
     await Hospital.findByIdAndDelete(id);
     res.status(200).json({
       success: true,
-      message: hospitalToBeDeleted.name+" has been deleted",
+      message: hospitalToBeDeleted.name + " has been deleted",
     });
-    
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "has been ocurred an error with server",
       controller: "hospitals.controller",
     });
-    
   }
-  
 };
 
 module.exports = {

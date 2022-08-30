@@ -1,3 +1,16 @@
 node_modules/
 .env/
 *.env
+uploads/hospitals/**.gif
+uploads/hospitals/**.png
+uploads/hospitals/**.jpg
+uploads/hospitals/**.jpeg
+uploads/doctors/**.gif
+uploads/doctors/**.png
+uploads/doctors/**.jpg
+uploads/doctors/**.jpeg
+uploads/users/**.gif
+uploads/users/**.png
+uploads/users/**.jpg
+uploads/users/**.jpeg
+uploads/**.jpg

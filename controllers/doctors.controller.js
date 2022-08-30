@@ -7,7 +7,7 @@ const getDoctors = async (req, res) => {
     // -doctor has relation with user and hospital table-
     const doctors = await Doctor.find()
       .populate("createdBy", "name email")
-      .populate("hospital", "name");
+      .populate("hospital", "name img");
     res.status(200).json({
       success: true,
       message: "get doctors has been executed",
@@ -18,6 +18,37 @@ const getDoctors = async (req, res) => {
       success: false,
       message: "has been ocurred an error with server",
       controller: "doctors.controller",
+      error,
+    });
+  }
+};
+
+const getDoctor = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const doctor = await Doctor.findById(id)
+      .populate("createdBy", "name img")
+      .populate("hospital", "name img");
+
+    if (!doctor) {
+      return res.status(500).json({
+        success: false,
+        message: "doctor no exist",
+        error,
+        id,
+      });
+    }
+
+    return res.status(200).json({
+      sucess: true,
+      messsage: "doctor has been found",
+      doctor,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "error in doctor controller - getDoctor function",
       error,
     });
   }
@@ -134,4 +165,5 @@ module.exports = {
   createDoctors,
   updateDoctor,
   deleteDoctor,
+  getDoctor,
 };

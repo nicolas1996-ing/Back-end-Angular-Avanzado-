@@ -108,10 +108,11 @@ const renewToken = async (req, res) => {
   // ----------------------------------------------------
   try {
     const JSOWebtoken = await generateJSONWebToken(req.uid, req.email); // payload: _id and email
+    const user = await User.findOne({ email: req.email });
+
     res.status(200).json({
       success: true,
-      uid: req.uid,
-      email: req.email,
+      user,
       JSOWebtoken,
     });
   } catch (error) {

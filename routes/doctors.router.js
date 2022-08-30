@@ -5,12 +5,15 @@ const {
   createDoctors,
   updateDoctor,
   deleteDoctor,
+  getDoctor,
 } = require("../controllers/doctors.controller");
 const { validateJSONWebToken } = require("../middlewares/jsonTokenValidator");
 const { schemaValidator } = require("../middlewares/schemaValidator");
 const router = Router();
 
 router.get("/", validateJSONWebToken, getDoctors);
+router.get("/:id", validateJSONWebToken, getDoctor);
+
 router.post(
   "/",
   [
