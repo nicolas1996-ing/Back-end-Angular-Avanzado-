@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs/dist/bcrypt");
 const User = require("../models/users");
 const { googlVerify } = require("../utils/google-verify");
 const { generateJSONWebToken } = require("../utils/jwt");
+const { getMenuFrontend } = require("../utils/menu-front-end");
 
 // -----------------auth method #1-----------------
 // ------------------------------------------------
@@ -40,6 +41,7 @@ const loginUser = async (req, res) => {
       success: true,
       userdBD,
       token,
+      menu: getMenuFrontend(userdBD.role),
       message: "Used has been logged",
     });
   } catch (error) {
@@ -89,6 +91,7 @@ const googleSignIn = async (req, res) => {
       success: true,
       message: "Google Sign",
       JSOWebtoken,
+      menu: getMenuFrontend(newUser.role),
       name,
       email,
       picture,
@@ -113,6 +116,7 @@ const renewToken = async (req, res) => {
     res.status(200).json({
       success: true,
       user,
+      menu: getMenuFrontend(user.role),
       JSOWebtoken,
     });
   } catch (error) {

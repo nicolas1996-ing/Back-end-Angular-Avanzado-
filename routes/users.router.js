@@ -7,7 +7,11 @@ const {
   deleteUser,
   getUser,
 } = require("../controllers/users.controller");
-const { validateJSONWebToken } = require("../middlewares/jsonTokenValidator");
+const {
+  validateJSONWebToken,
+  validateAdminRole,
+  validateAdminRoleOrSameUser,
+} = require("../middlewares/jsonTokenValidator");
 const { schemaValidator } = require("../middlewares/schemaValidator");
 
 const router = Router();
@@ -35,6 +39,7 @@ router.patch(
   "/:id",
   [
     validateJSONWebToken,
+    validateAdminRoleOrSameUser,
     check("name", "name is required").not().isEmpty(),
     check("email", "email is required").isEmail(),
     check("role", "role is required").not().isEmpty(),
@@ -43,5 +48,5 @@ router.patch(
   updateUser
 );
 
-router.delete("/:id", validateJSONWebToken, deleteUser);
+router.delete("/:id", [validateJSONWebToken, validateAdminRole], deleteUser);
 module.exports = router;
