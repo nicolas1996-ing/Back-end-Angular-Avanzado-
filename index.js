@@ -28,6 +28,7 @@ app.use(express.json());
 // ------------connect with the front-end------------
 app.use(express.static("public"));
 
+// routes
 app.use("/api/users", require("./routes/users.router.js"));
 app.use("/api/login", require("./routes/login.router.js"));
 app.use("/api/hospitals", require("./routes/hospitals.router.js"));
